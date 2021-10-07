@@ -26,9 +26,7 @@ class VentanaClubSocial(QMainWindow):
         self.ui.pbutton_registrar_consumo.clicked.connect(self.abrir_dialogo_registrar_consumo)
         self.ui.listview_socios.setModel(QStandardItemModel())
         self.ui.listview_facturas.setModel(QStandardItemModel())
-        self.ui.listview_socios.selectionChanged().connect(self.selecionar_socio())
-
-
+        self.ui.listview_socios.selectionModel().selectionChanged.connect(self.selecionar_socio)
     def abrir_dialogo_afiliar_socio(self):
         dialogo = DialogoAfiliarSocio(self)
         resp = dialogo.exec_()
@@ -47,8 +45,6 @@ class VentanaClubSocial(QMainWindow):
                 msg_box.exec_()
             else:
                 self.actualizar_lista_socios(socio)
-    def selecionar_socio(self):
-        pass
     def actualizar_lista_socios(self, socio):
         item = QStandardItem(str(socio))
         item.setEditable(False)
@@ -58,28 +54,42 @@ class VentanaClubSocial(QMainWindow):
     def abrir_dialogo_registrar_consumo(self):
         dialogo = DialogoRegistrarConsumo(self)
         resp = dialogo.exec_()
+        indexes = self.ui.listview_socios.selectedIndexes()
+        item = self.ui.listview_socios.model().itemFromIndex(indexes[0])
         if resp == QDialog.Accepted:
             concepto=dialogo.ui.lineedit_detalle.text()
             valor = dialogo.ui.lineedit_valor.text()
             autorizado = dialogo.ui.lineedit_autorizado.text()
-            factura = self.club.registrar_consumo_a_socio(concepto,valor,autorizado)
-            self.actualizar_lista_facturas(factura)
+            factura = self.club.registrar_consumo_a_socio(item.socio.cedula,concepto,valor,autorizado)
+            self.actualizar_lista_facturas()
 
-    def actualizar_lista_facturas(self, factura):
-        item = QStandardItem(str(factura))
-        item.setEditable(False)
-        item.factura = factura
-        self.ui.listview_facturas.model().appendRow(item)
+    def actualizar_lista_facturas(self):
+        self.ui.listview_facturas.model().clear()
+        indexes = self.ui.listview_socios.selectedIndexes()
+        if len(indexes)>0:
+            facturas=self.ui.listview_socios.model().itemFromIndex(indexes[0]).socio.facturas
+            for factura in facturas:
+                item = QStandardItem(str(factura))
+                item.setEditable(False)
+                item.factura = factura
+                self.ui.listview_facturas.model().appendRow(item)
+    def actualizar_lista_autorizados(self):
+        self.ui.listwidget_autorizados.clear()
+        indexes = self.ui.listview_socios.selectedIndexes()
+        if len(indexes) > 0:
+            autorizados=self.ui.listview_socios.model().itemFromIndex(indexes[0]).socio.autorizados
+            for autorizado in autorizados:
+                self.ui.listwidget_autorizados.addItem(str(autorizado))
     def selecionar_socio(self,selected, deselected):
         indexes=selected.indexes()
         if len(indexes)>0:
             item=self.ui.listview_socios.model().itemFromIndex(indexes[0])
             self.actualizar_lista_facturas()
-            self.actualizar_lista_socios()
-            self.actualizar_datos_socio(item.socion)
-    def actualizar_datos_socio(self):
-        pass
-
+            self.actualizar_lista_autorizados()
+            self.actualizar_datos_socio(item.socio)
+    def actualizar_datos_socio(self,socio):
+        self.ui.lineedit_cedula.setText(socio.cedula)
+        self.ui.lineedit_nombre.setText(socio.nombre)
 class DialogoAfiliarSocio(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)

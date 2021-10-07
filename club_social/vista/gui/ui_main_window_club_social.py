@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_club_socialtkreqn.ui'
+## Form generated from reading UI file 'main_window_club_socialuZzrBE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -76,6 +76,7 @@ class Ui_MainWindow(object):
 
         self.lineedit_cedula = QLineEdit(self.groupBox_2)
         self.lineedit_cedula.setObjectName(u"lineedit_cedula")
+        self.lineedit_cedula.setReadOnly(True)
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.lineedit_cedula)
 
@@ -86,6 +87,7 @@ class Ui_MainWindow(object):
 
         self.lineedit_nombre = QLineEdit(self.groupBox_2)
         self.lineedit_nombre.setObjectName(u"lineedit_nombre")
+        self.lineedit_nombre.setReadOnly(True)
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.lineedit_nombre)
 
