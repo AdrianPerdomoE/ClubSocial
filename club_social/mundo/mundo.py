@@ -20,7 +20,6 @@ class Factura:
     def __str__(self):
         return f"{self.concepto} - valor: {self.valor} - autorizado: {self.autorizado}"
 
-
 class Socio:
     """
     Clase que representa un socio del club social
@@ -53,6 +52,7 @@ class Socio:
     def agregar_factura(self, concepto: str, valor: float, autorizado: str = ""):
         factura = Factura(concepto, valor, autorizado)
         self.facturas.append(factura)
+        return  factura
 
     def __str__(self):
         return f"({self.cedula}) {self.nombre}"
